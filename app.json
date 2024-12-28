@@ -1,28 +1,26 @@
 {
   "expo": {
     "name": "App",
-    "slug": "App",
+    "slug": "appproject",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/icon.jpg",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
-    "splash": {
-      "image": "./assets/splash-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+
+    "extra": {
+      "eas": {
+        "projectId": "45f66c17-c58d-46cd-8854-66cc9b3bd47c"
+      }
+    },
+    "owner": "chabane_7"
   }
 }
