@@ -1,33 +1,31 @@
-import { Text, View, FlatList, ActivityIndicator } from "react-native";
+import { Text, View, FlatList, ActivityIndicator, Alert } from "react-native";
 
 import React, { useState, useEffect } from "react";
 import tw from "twrnc";
 import Card from "../Custom/Card";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 export default function Review() {
   const [data, setData] = useState([]);
-  const [ispending, setispending] = useState(true);
-
+  const [ispending, setispending] = useState(false);
+  const getData = async () => {
+    try {
+      setispending(true);
+      const res = await fetch(
+        "https://server-tmqx.onrender.com/face_prediction/get_persones"
+      );
+      const data = await res.json();
+      setData(data);
+    } catch (err) {
+      Alert.alert("Error", "Somthing went wrong try later ...");
+    }
+    setispending(false);
+  };
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const res = await fetch(
-          "https://server-tmqx.onrender.com/face_prediction/get_persones"
-        );
-        const data = await res.json();
-        setData(data);
-        setispending(false);
-      } catch (err) {
-        setispending(false);
-      }
-    };
-
     getData();
   }, []);
 
   return (
-    <SafeAreaView style={tw` w-full h-full`}>
+    <SafeAreaView style={tw` w-full h-full bg-slate-800`}>
       {ispending ? (
         <View style={tw` justify-center items-center flex-col  flex-1`}>
           <ActivityIndicator size="large" color="red" />

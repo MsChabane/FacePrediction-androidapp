@@ -11,16 +11,15 @@ import CustomButton from "../Custom/CustomButton";
 import tw from "twrnc";
 
 import defaultimage from "../assets/defaultimg.jpg";
-import * as FS from "expo-file-system";
+
 import * as Imagepicher from "expo-image-picker";
 
 export default function Prediction({ navigation }) {
-  const handel = async () => {
+  const predict = async () => {
     if (isimported) {
-      setIspending(true);
-
       try {
-        const res = await fetch(
+        setIspending(true);
+        const response = await fetch(
           "https://server-tmqx.onrender.com/face_prediction/prediction_source",
           {
             method: "POST",
@@ -30,26 +29,26 @@ export default function Prediction({ navigation }) {
             body: JSON.stringify({ image: image }),
           }
         );
-        console.log(res);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.erreur === undefined) {
-            console.log(data);
-            const { id, name, gender } = data;
 
+        if (response.ok) {
+          const data = await response.json();
+          if (data.erreur === undefined) {
+            const { id, name, gender } = data;
+            setIspending(false);
             navigation.navigate("Result", { id, name, gender, image });
           } else {
             Alert.alert("Error", "connection faild ... try again !");
           }
         }
       } catch (err) {
-        Alert.alert("Error", err);
+        Alert.alert("Error", "Something went wrongs");
       }
       setIspending(false);
     } else {
       Alert.alert("Oops", "Choose an image before");
     }
   };
+
   const [isPending, setIspending] = useState(false);
   const [image, setImage] = useState("");
   const [isimported, setIsimported] = useState(false);
@@ -64,24 +63,17 @@ export default function Prediction({ navigation }) {
     });
 
     if (!result.canceled) {
-      const bytes = await FS.readAsStringAsync(result.assets[0].uri, {
-        encoding: FS.EncodingType.Base64,
-      });
-
-      setImage(`data:image/png;base64,${bytes}`);
+      setImage(`data:image/png;base64,${result.assets[0].base64}`);
       setIsimported(true);
     }
   };
   const reset = () => {
-    //setImage('');
-    //setIsimported(false);
-    const d = { erreur: "yes" };
-    console.log(d.erf === undefined);
-    console.log(d.erreur);
+    setImage("");
+    setIsimported(false);
   };
 
   return (
-    <SafeAreaView style={tw`flex-1 justify-center items-center `}>
+    <SafeAreaView style={tw`flex-1 justify-center items-center bg-slate-800`}>
       {isPending ? (
         <View>
           <ActivityIndicator size="large" color="red" />
@@ -134,7 +126,7 @@ export default function Prediction({ navigation }) {
             textstyle={
               "text-lg font-bold font-mono tracking-widest text-blue-500  uppercase  "
             }
-            handelPress={handel}
+            handelPress={predict}
             iconName="east"
             iconcolor="text-blue-500"
           />
